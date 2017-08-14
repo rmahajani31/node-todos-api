@@ -65,13 +65,13 @@ app.delete('/todos/:id', (request, response) => {
     const id = request.params.id;
 
     if(!ObjectID.isValid(id)) {
-        response.status(404).send({"Error": "Invalid Id"});
+        return response.status(404).send({"Error": "Invalid Id"});
     }
 
     Todo.findByIdAndRemove(id)
     .then((todo) => {
         if(!todo) {
-            response.status(404).send({"Error": "No Todo corresponding to this id"});
+            return response.status(404).send({"Error": "No Todo corresponding to this id"});
         }
         response.send(todo);
     })
