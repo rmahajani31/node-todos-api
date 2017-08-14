@@ -61,6 +61,25 @@ app.get('/todos/:id', (request, response) => {
     }
 });
 
+app.delete('/todos/:id', (request, response) => {
+    const id = request.params.id;
+
+    if(!ObjectID.isValid(id)) {
+        response.status(404).send({"Error": "Invalid Id"});
+    }
+
+    Todo.findByIdAndRemove(id)
+    .then((todo) => {
+        if(!todo) {
+            response.status(404).send({"Error": "No Todo corresponding to this id"});
+        }
+        response.send(todo);
+    })
+    .catch((err) => {
+        response.status(400).send(err);
+    }); 
+});
+
 app.listen(port, () => {
     console.log(`Started on port ${port}...`);
 });
