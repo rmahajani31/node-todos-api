@@ -4,6 +4,7 @@ const {User} = require('./models/user');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
+const _ = require('lodash');
 
 const port = process.env.PORT || 3000;
 
@@ -79,6 +80,37 @@ app.delete('/todos/:id', (request, response) => {
         response.status(400).send(err);
     }); 
 });
+
+app.patch('/todos/:id', (request, response) => {
+    const id = request.params.id;
+    if (!Object.isValid(id)) {
+        return response.status(404).send({"Error": "Invalid Id"});
+    }
+    
+    const body = _.pick(request.body, ['text', 'completed']);
+
+    if (_.isBoolean(body.completed) && body.completed) {
+        body.completedAt = new Date().getTime();
+    } else {
+        body.completed = false;
+        body.completedAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, {
+        $set: body
+    }, {
+        new: true
+    })
+    .then((todo) => {
+        if (!todo) {
+            return response.status(404).send({"Error": "No Todo corresponding to this id"});
+        }
+        response.send(todo);
+    })
+    .catch((err) => {
+        response.status(400).send(err);
+    });
+})
 
 app.listen(port, () => {
     console.log(`Started on port ${port}...`);
