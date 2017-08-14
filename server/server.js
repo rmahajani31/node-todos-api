@@ -83,10 +83,10 @@ app.delete('/todos/:id', (request, response) => {
 
 app.patch('/todos/:id', (request, response) => {
     const id = request.params.id;
-    if (!Object.isValid(id)) {
+    if (!ObjectID.isValid(id)) {
         return response.status(404).send({"Error": "Invalid Id"});
     }
-    
+
     const body = _.pick(request.body, ['text', 'completed']);
 
     if (_.isBoolean(body.completed) && body.completed) {
