@@ -3,6 +3,7 @@ const {Todo} = require('./models/todos');
 const {User} = require('./models/user');
 const express = require('express');
 const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 const port = process.env.PORT || 3000;
 
@@ -38,6 +39,28 @@ app.get('/todos', (request, response) => {
     });
 });
 
+app.get('/todos/:id', (request, response) => {
+    const id = request.params.id;
+    console.log(id);
+    if (!ObjectID.isValid(id)) {
+        console.log("Invalid");
+        response.status(404).send({"error": "Invalid id"});
+    }
+    else {
+        Todo.findById(id)
+        .then((todo) => {
+            if (!todo) {
+                response.status(404).send({"error": "No Todo corresponding to this id"});
+            }
+            response.send(todo);
+        })
+        .catch((err) => {
+            console.log("sending error message");
+            response.status(400).send(err);
+        });
+    }
+});
+
 app.listen(port, () => {
-    console.log("Started on port 3000...");
+    console.log(`Started on port ${port}...`);
 });
