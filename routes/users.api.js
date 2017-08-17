@@ -17,9 +17,11 @@ router.post('/', (request, response) => {
     newUser.save()
     .then((user) => {
         console.log("New user is", user);
+        response.send(user);
     })
     .catch((err) => {
         console.log("Error", err);
+        response.status(400).send(err);
     });
 });
 
