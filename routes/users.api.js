@@ -1,5 +1,5 @@
-const {mongoose} = require('./db/mongoose');
-const {User} = require('./models/user');
+const {mongoose} = require('../server/db/mongoose');
+const {User} = require('../server/models/user');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
